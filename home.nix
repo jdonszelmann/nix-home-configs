@@ -24,13 +24,40 @@
         indent = true;
 
         nixGrammars = true;
-        ensureInstalled = "al";
+        ensureInstalled = "all";
       };
       surround.enable = true;
       cmp-nvim-lsp.enable = true;
       lsp-format.enable = true;
 
       fugitive.enable = true;
+
+      neo-tree = {
+        enable = true;
+
+        closeIfLastWindow = true;
+
+        window = {
+          position = "right";
+          width = 30;
+          mappings = {
+            "<bs>" = "navigate_up";
+            "." = "set_root";
+            "f" = "fuzzy_finder";
+            "/" = "filter_on_submit";
+            "h" = "show_help";
+          };
+        };
+        filesystem = {
+          followCurrentFile.enabled = true;
+          filteredItems = {
+            hideHidden = false;
+            hideDotfiles = false;
+            forceVisibleInEmptyFolder = true;
+            hideGitignored = false;
+          };
+        };
+      };
 
       gitsigns = {
         enable = true;
@@ -277,6 +304,13 @@
       -- vim.keymap.set('n', 'gr', builtin.lsp_references, {})
       -- vim.keymap.set('n', 'gd', builtin.lsp_definitions, {})
       -- vim.keymap.set('n', 'gi', builtin.lsp_implementations, {})
+
+      local gitsigns = require('gitsigns')
+      vim.keymap.set('n', '<leader>gr', gitsigns.reset_hunk)
+      vim.keymap.set('n', '<leader>gd', gitsigns.diffthis)
+
+      vim.keymap.set({'o', 'x'}, 'ig', ':<C-U>Gitsigns select_hunk<CR>')
+      vim.keymap.set('n', '<leader>t', ':Neotree toggle<CR>')
 
       -- ============ files and directories ==============
 
