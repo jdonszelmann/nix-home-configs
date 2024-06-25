@@ -1,4 +1,26 @@
-{ config, lib, pkgs, specialArgs, ... }: {
+{ config, lib, pkgs, specialArgs, ... }:
+let
+  render-markdown = pkgs.vimUtils.buildVimPlugin {
+    name = "render-markdown";
+    src = pkgs.fetchFromGitHub {
+      owner = "MeanderingProgrammer";
+      repo = "markdown.nvim";
+      rev = "78ef39530266b3a0736c48b46c3f5d1ab022c7db";
+      hash = "sha256-mddnBvIrekHh60Ix6qIYAnv10Mu40LamGI47EXk9wSo=";
+    };
+  };
+  # for lsp/cmp inside markdown code blocks
+  otter = pkgs.vimUtils.buildVimPlugin {
+    name = "otter";
+    src = pkgs.fetchFromGitHub {
+      owner = "jmbuhr";
+      repo = "otter.nvim";
+      rev = "cbb1be0586eae18cbea38ada46af428d2bebf81a";
+      hash = "sha256-eya/8rG3O8UFeeBRDa5U8v3qay+q3iFwPnYtdX7ptCA=";
+    };
+  };
+in
+{
   home.stateVersion = "24.05";
   home.username = "jonathan";
   home.homeDirectory = "/home/jonathan";
@@ -31,6 +53,42 @@
       lsp-format.enable = true;
 
       fugitive.enable = true;
+
+      auto-session = {
+        enable = true;
+        extraOptions = {
+          auto_save_enabled = true;
+          auto_restore_enabled = true;
+          #           auto_session_use_git_branch = true;
+          #           auto_session_suppress_dirs = [
+          #             "~/"
+          #             "~/Documents"
+          #             "~/Documents/projects"
+          #             "~/src"
+          #             "~/Downloads"
+          #             "/"
+          #           ];
+          auto_session_pre_save_cmds = [
+            "Neotree close"
+          ];
+        };
+      };
+
+      comment = {
+        enable = true;
+
+        settings = {
+          sticky = true;
+          toggler = {
+            line = "gcc";
+            block = "gbc";
+          };
+          opleader = {
+            line = "gc";
+            block = "gb";
+          };
+        };
+      };
 
       neo-tree = {
         enable = true;
@@ -157,7 +215,7 @@
             };
           };
           clangd = {
-            enable = false;
+            enable = true;
             filetypes = [ "c" "cpp" "objc" "objcpp" ];
           };
           eslint = {
@@ -191,7 +249,7 @@
             filetypes =
               [ "javascript" "javascriptreact" "typescript" "typescriptreact" ];
           };
-
+          marksman.enable = true;
           yamlls = {
             enable = true;
             filetypes = [ "yaml" ];
@@ -210,8 +268,10 @@
         };
       };
       fidget.enable = true;
-      comment.enable = true;
-      floaterm.enable = true;
+      floaterm = {
+        enable = true;
+        opener = "edit";
+      };
       telescope = {
         enable = true;
 
@@ -232,9 +292,25 @@
       nvim-web-devicons
       telescope-ui-select-nvim
       telescope-fzf-native-nvim
+      vim-suda
+      render-markdown
+      otter
     ];
 
     extraConfigLua = ''
+      vim.o.sessionoptions="blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+
+      require("render-markdown").setup {
+        latex_converter = '${pkgs.python312Packages.pylatexenc}/bin/latex2text',
+      }
+
+      local otter = require'otter'
+      otter.setup{}
+      vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"}, {
+        pattern = {"*.md"},
+        callback = function() otter.activate({'python', 'rust', 'c', 'lua', 'bash' }, true, true, nil) end,
+      })
+
       require("onedark").setup {
           style = "deep",
           highlights = {
@@ -265,6 +341,7 @@
           sources = cmp.config.sources({
               { name = 'nvim_lsp' },
               { name = 'vsnip' },
+              { name = "otter" },
           }, {
               { name = 'buffer' },
           })
@@ -274,6 +351,9 @@
       local keymap = vim.api.nvim_set_keymap
       local opts = { noremap = true, silent = true }
       local builtin = require('telescope.builtin')
+        
+      -- comment
+      vim.keymap.set("n", "<C-_>", ":lua require('Comment.api').toggle.linewise.current()<CR> j", opts)
 
       -- indent and dedent using tab/shift-tab
       vim.keymap.set("n", "<tab>", ">>_")
@@ -300,10 +380,6 @@
       vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
       vim.keymap.set('n', '<leader><leader>', builtin.live_grep, {})
       vim.keymap.set('n', '<leader>fh', builtin.search_history, {})
-
-      -- vim.keymap.set('n', 'gr', builtin.lsp_references, {})
-      -- vim.keymap.set('n', 'gd', builtin.lsp_definitions, {})
-      -- vim.keymap.set('n', 'gi', builtin.lsp_implementations, {})
 
       local gitsigns = require('gitsigns')
       vim.keymap.set('n', '<leader>gr', gitsigns.reset_hunk)
@@ -415,6 +491,11 @@
 
       keymap('n', "t", ":FloatermToggle myfloat<CR>", opts)
       keymap('t', "<Esc>", "<C-\\><C-n>:q<CR>", opts)
+
+      vim.cmd([[
+          let g:suda_smart_edit = 1
+          filetype plugin indent on
+      ]])
     '';
 
     opts = {
@@ -423,92 +504,4 @@
       showmatch = true;
     };
   };
-
-  # programs.neovim = {
-  #   plugins = with pkgs.vimPlugins; [
-  #     # figure out lsp capabilities (initialized in lspconfig)
-  #     }
-  #     {
-  #       plugin = nvim-lspconfig;
-  #       type = "lua";
-  #       config = let inlay-hint = ''
-  #           on_attach = function(client, bufnr)
-  #             vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
-  # 
-  #             vim.keymap.set("n", "<leader>h", rt.hover_actions.hover_actions, { buffer = bufnr })
-  #             vim.keymap.set("n", "<leader>g", generate, { buffer = bufnr })
-  #             vim.keymap.set("n", "<leader>em", rt.expand_macro.expand_macro, { buffer = bufnr })
-  #             vim.keymap.set("n", "<F2>", rt.ssr.ssr, { buffer = bufnr })
-  #           end,
-  #           capabilities = capabilities
-  #       ''; in ''
-  #         y
-  # 
-  #         local lsp = require('lspconfig')
-  #         lsp.nil_ls.setup {
-  #           ${inlay-hint},
-  #           cmd = { "${pkgs.nil}/bin/nil" }
-  #         }
-  #         lsp.rust_analyzer.setup {
-  #           cmd = { "${pkgs.rust-analyzer}/bin/rust-analyzer" },
-  #           ${inlay-hint},
-  #           settings = {
-  #               ["rust-analyzer"] = {
-  #                   cargo = {
-  #                       allFeatures = true,
-  #                       loadOutDirsFromCheck = true,
-  #                       runBuildScripts = true,
-  #                       buildScripts = {
-  #                           enable = true,
-  #                       },
-  #                   },
-  #                   -- Add clippy lints for Rust.
-  #                   checkOnSave = {
-  #                       allFeatures = true,
-  #                       command = "clippy",
-  #                       extraArgs = { "--no-deps" },
-  #                   },
-  #                   procMacro = {
-  #                       enable = true
-  #                   },
-  #                   imports = {
-  #                       granularity = {
-  #                           group = "module",
-  #                       },
-  #                       prefix = "self",
-  #                   },
-  #               },
-  #           },
-  #         }
-  #         lsp.clangd.setup {
-  #             ${inlay-hint},
-  #             cmd = { "${pkgs.llvmPackages_18.clang-unwrapped}/bin/clangd" },
-  #         }
-  #         lsp.lua_ls.setup {
-  #           ${inlay-hint},
-  #           settings = {
-  #               cmd = {"${pkgs.lua-language-server}/bin/lua-language-server"},
-  #               Lua = {
-  #                   runtime = {
-  #                       -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
-  #                       version = 'LuaJIT',
-  #                   },
-  #                   diagnostics = {
-  #                       -- Get the language server to recognize the `vim` global
-  #                       globals = { 'vim' },
-  #                   },
-  #                   workspace = {
-  #                       -- Make the server aware of Neovim runtime files
-  #                       library = vim.api.nvim_get_runtime_file("", true),
-  #                   },
-  #                   -- Do not send telemetry data containing a randomized but unique identifier
-  #                   telemetry = {
-  #                       enable = false,
-  #                   },
-  #               },
-  #           },
-  # 
-
-  #   '';
-  # };
 }
