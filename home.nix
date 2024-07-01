@@ -298,16 +298,22 @@ in
       onedark-nvim
       vim-vsnip
       cmp-vsnip
+      cmp-path
       nvim-web-devicons
       telescope-ui-select-nvim
       telescope-fzf-native-nvim
       vim-suda
       render-markdown
       otter
+      vim-astro
     ];
 
     extraConfigLua = ''
       vim.o.sessionoptions="blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+
+      vim.cmd([[
+          let g:astro_typescript = 'enable'
+      ]])
 
       require("render-markdown").setup {
         latex_converter = '${pkgs.python312Packages.pylatexenc}/bin/latex2text',
@@ -349,6 +355,7 @@ in
           }),
           sources = cmp.config.sources({
               { name = 'nvim_lsp' },
+              { name = 'path' },
               { name = 'vsnip' },
               { name = "otter" },
           }, {
