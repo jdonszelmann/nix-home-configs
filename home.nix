@@ -129,6 +129,15 @@ in
         };
       };
 
+      typst-vim = {
+        enable = true;
+        settings = {
+          cmd = "${pkgs.typst}/bin/typst";
+          conceal_math = true;
+          auto_close_toc = true;
+        };
+      };
+
       lualine = {
         enable = true;
         theme = "onedark";

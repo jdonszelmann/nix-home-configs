@@ -29,10 +29,12 @@
           inherit (args) extraSpecialArgs;
         });
 
-    in flake-utils.lib.eachDefaultSystem (system: rec {
-      formatter = legacyPackages.nixfmt;
-      legacyPackages = pkgsForSystem system;
-    }) // {
+    in
+    flake-utils.lib.eachDefaultSystem
+      (system: rec {
+        formatter = legacyPackages.nixfmt;
+        legacyPackages = pkgsForSystem system;
+      }) // {
       # non-system suffixed items should go here
       nixosModules.home = import ./home.nix; # attr set or list
 
