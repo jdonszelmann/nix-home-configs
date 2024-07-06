@@ -37,6 +37,16 @@ in
 
     package = pkgs.neovim-unwrapped;
 
+    keymaps = [
+      {
+        action = "<cmd>MCunderCursor<CR>";
+        key = "<leader>m";
+        options = {
+          desc = "Start multicursor";
+        };
+      }
+    ];
+
     plugins = {
       treesitter = {
         enable = true;
@@ -71,15 +81,13 @@ in
         };
       };
 
+      lspkind.enable = true;
+
       comment = {
         enable = true;
 
         settings = {
           sticky = true;
-          toggler = {
-            line = "gcc";
-            block = "gbc";
-          };
           opleader = {
             line = "gc";
             block = "gb";
@@ -110,6 +118,36 @@ in
             hideDotfiles = false;
             forceVisibleInEmptyFolder = true;
             hideGitignored = false;
+          };
+        };
+      };
+
+
+      nvim-lightbulb = {
+        enable = true;
+        settings = {
+          autocmd = {
+            enabled = true;
+            updatetime = 200;
+          };
+          line = {
+            enabled = true;
+          };
+          number = {
+            enabled = true;
+            hl = "LightBulbNumber";
+          };
+          float = {
+            enabled = true;
+            text = "💡";
+          };
+          sign = {
+            enabled = true;
+            text = "💡";
+          };
+          status_text = {
+            enabled = true;
+            text = "💡";
           };
         };
       };
@@ -287,6 +325,17 @@ in
 
         extensions.ui-select.enable = true;
         extensions.fzf-native.enable = true;
+
+        settings = {
+          defaults = {
+            path_display = [ "smart" ];
+            layout_strategy = "horizontal";
+            layout_config = {
+              width = 0.99;
+              height = 0.99;
+            };
+          };
+        };
       };
       cmp.enable = true;
       nvim-autopairs.enable = true;
@@ -300,6 +349,7 @@ in
       vim-vsnip
       cmp-vsnip
       cmp-path
+      cmp-spell
       nvim-web-devicons
       telescope-ui-select-nvim
       telescope-fzf-native-nvim
@@ -356,9 +406,10 @@ in
           }),
           sources = cmp.config.sources({
               { name = 'nvim_lsp' },
+              { name = "otter" },
               { name = 'path' },
               { name = 'vsnip' },
-              { name = "otter" },
+              { name = 'spell' },
           }, {
               { name = 'buffer' },
           })
@@ -370,7 +421,8 @@ in
       local builtin = require('telescope.builtin')
         
       -- comment
-      vim.keymap.set("n", "<C-_>", ":lua require('Comment.api').toggle.linewise.current()<CR> j", opts)
+      vim.keymap.set("n", "<C-/>", ":lua require('Comment.api').toggle.linewise.current()<CR> j", opts)
+      vim.keymap.set("v", "<C-/>", ":lua require('Comment.api').toggle.linewise.current()<CR> j", opts)
 
       -- indent and dedent using tab/shift-tab
       vim.keymap.set("n", "<tab>", ">>_")
@@ -394,9 +446,12 @@ in
       vim.cmd [[nnoremap ; :]]
 
       local builtin = require('telescope.builtin')
+      
       vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
       vim.keymap.set('n', '<leader><leader>', builtin.live_grep, {})
       vim.keymap.set('n', '<leader>fh', builtin.search_history, {})
+      vim.keymap.set('n', '<leader>d', "<cmd>Telescope diagnostics bufnr=0<cr>", {})
+      vim.keymap.set('n', '<leader>ad', builtin.diagnostics, {})
 
       local gitsigns = require('gitsigns')
       vim.keymap.set('n', '<leader>gr', gitsigns.reset_hunk)
