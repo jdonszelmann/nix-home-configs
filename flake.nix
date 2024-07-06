@@ -12,35 +12,39 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
+
   outputs = { self, home-manager, nixpkgs, flake-utils, nixvim }:
     let
+      homeManagerModules = [ ];
+
       pkgsForSystem = system:
         import nixpkgs {
           inherit system;
           config.allowUnfree = true;
         };
 
-      mkHomeConfiguration = args:
+      mkHomeConfiguration = root: args:
         home-manager.lib.homeManagerConfiguration (rec {
-          modules = [ (import ./home.nix) nixvim.homeManagerModules.nixvim ]
+          modules = [ root nixvim.homeManagerModules.nixvim ]
             ++ (args.modules or [ ]);
           pkgs = pkgsForSystem (args.system or "x86_64-linux");
         } // {
           inherit (args) extraSpecialArgs;
         });
 
+      homeConfigurations = {
+        kili = mkHomeConfiguration (import ./ori/home.nix) { extraSpecialArgs = { }; };
+      };
+      miscelaneous = {
+        inherit home-manager;
+        inherit (home-manager) packages;
+      };
     in
     flake-utils.lib.eachDefaultSystem
       (system: rec {
         formatter = legacyPackages.nixfmt;
         legacyPackages = pkgsForSystem system;
       }) // {
-      # non-system suffixed items should go here
-      nixosModules.home = import ./home.nix; # attr set or list
-
-      homeConfigurations.kili = mkHomeConfiguration { extraSpecialArgs = { }; };
-
-      inherit home-manager;
-      inherit (home-manager) packages;
-    };
+      inherit homeConfigurations;
+    } // miscelaneous;
 }

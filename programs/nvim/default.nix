@@ -1,4 +1,4 @@
-{ config, lib, pkgs, specialArgs, ... }:
+{ pkgs, ... }:
 let
   render-markdown = pkgs.vimUtils.buildVimPlugin {
     name = "render-markdown";
@@ -21,9 +21,6 @@ let
   };
 in
 {
-  home.stateVersion = "24.05";
-  home.username = "jonathan";
-  home.homeDirectory = "/home/jonathan";
   home = { sessionVariables = { EDITOR = "nvim"; }; };
 
   programs.nixvim = {
@@ -208,6 +205,7 @@ in
         enable = true;
 
         servers = {
+          astro.enable = true;
           cssls.enable = true;
           rnix-lsp.enable = true;
           nil-ls = {
@@ -280,6 +278,8 @@ in
       floaterm = {
         enable = true;
         opener = "edit";
+        width = 0.8;
+        height = 0.8;
       };
       telescope = {
         enable = true;
