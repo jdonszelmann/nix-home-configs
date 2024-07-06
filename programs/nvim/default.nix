@@ -160,7 +160,8 @@ in
                 runBuildScripts = true;
                 loadOutDirsFromCheck = true;
               };
-              checkOnSave = {
+              checkOnSave = true;
+              check = {
                 allFeatures = true;
                 command = "clippy";
                 extraArgs = [ "--no-deps" ];

@@ -11,40 +11,65 @@
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    t.url = "github:jdonszelmann/t-rs";
   };
 
-  outputs = { self, home-manager, nixpkgs, flake-utils, nixvim }:
+  outputs = { self, home-manager, nixpkgs, flake-utils, nixvim, t }:
     let
-      homeManagerModules = [ ];
+      homeManagerModules = [
+        nixvim.homeManagerModules.nixvim
+      ];
 
       pkgsForSystem = system:
         import nixpkgs {
           inherit system;
           config.allowUnfree = true;
+          overlays = [
+            (final: prev: {
+              custom = {
+                inherit t;
+              };
+            })
+          ];
         };
-
       mkHomeConfiguration = root: args:
-        home-manager.lib.homeManagerConfiguration (rec {
-          modules = [ root nixvim.homeManagerModules.nixvim ]
+        home-manager.lib.homeManagerConfiguration ({
+          modules = [ root ] ++ homeManagerModules
             ++ (args.modules or [ ]);
           pkgs = pkgsForSystem (args.system or "x86_64-linux");
         } // {
           inherit (args) extraSpecialArgs;
         });
-
-      homeConfigurations = {
-        kili = mkHomeConfiguration (import ./ori/home.nix) { extraSpecialArgs = { }; };
-      };
-      miscelaneous = {
-        inherit home-manager;
-        inherit (home-manager) packages;
-      };
     in
     flake-utils.lib.eachDefaultSystem
       (system: rec {
         formatter = legacyPackages.nixfmt;
         legacyPackages = pkgsForSystem system;
+        pkgs = legacyPackages;
+        devShells.default = pkgs.mkShell {
+          buildInputs = with pkgs; [
+            (pkgs.writeShellScriptBin "fast-repl" ''
+              source /etc/set-environment
+              nix repl --file "${./.}/repl.nix" $@
+            '')
+
+            (pkgs.writeShellScriptBin "apply-home" ''
+              nix run .#home-manager -- switch --flake .#$@
+            '')
+
+            (pkgs.writeShellScriptBin "apply" ''
+              apply-home $(hostname -f)
+            '')
+          ];
+        };
       }) // {
-      inherit homeConfigurations;
-    } // miscelaneous;
+
+      homeConfigurations = {
+        kili = mkHomeConfiguration (import ./hosts/kili/home.nix) { extraSpecialArgs = { }; };
+      };
+
+      inherit home-manager;
+      inherit (home-manager) packages;
+    };
 }
