@@ -28,7 +28,7 @@
           overlays = [
             (final: prev: {
               custom = {
-                inherit t;
+                t = t.packages.${system}.default;
               };
             })
           ];

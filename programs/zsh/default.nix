@@ -67,6 +67,12 @@ in
           t $@
       }
 
+      function rs() {
+          cd "$(${pkgs.custom.t}/bin/t-rs $@ | tail -n 1)"
+          cargo init . --bin --name $(basename "$PWD")
+          vim .
+      }
+
       # path
       path() {
           export PATH="$1:$PATH"
