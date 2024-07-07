@@ -13,6 +13,13 @@ let
     "lt" = "${pkgs.eza}/bin/eza --long --tree -L 3";
     "open" = "${pkgs.xdg-utils}/bin/xdg-open";
     "clip" = "${pkgs.wl-clipboard-rs}/wl-copy";
+
+    "pull" = "${pkgs.git}/bin/git pull";
+    "push" = "${pkgs.git}/bin/git push";
+    "commit" = "${pkgs.git}/bin/git commit";
+    "add" = "${pkgs.git}/bin/git add";
+    "patch" = "${pkgs.git}/bin/git add -p";
+    "amend" = "${pkgs.git}/bin/git commit --amend";
   };
   # extracting any compressed format
   extract = ''
@@ -70,7 +77,7 @@ in
       function rs() {
           cd "$(${pkgs.custom.t}/bin/t-rs $@ | tail -n 1)"
           cargo init . --bin --name $(basename "$PWD")
-          vim .
+          vim src/main.rs
       }
 
       # path
