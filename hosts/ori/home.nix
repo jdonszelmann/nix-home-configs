@@ -1,8 +1,12 @@
-{ ... }: {
+{ pkgs, ... }: {
   home.stateVersion = "24.05";
   home.username = "jonathan";
   home.homeDirectory = "/home/jonathan";
-  imports = [ ./gnome.nix ];
+  imports = [ 
+    ../../programs/gnome
+    ../../programs/nvim
+    ../../programs/zsh
+  ];
 
   home.packages = with pkgs; [
     element-desktop

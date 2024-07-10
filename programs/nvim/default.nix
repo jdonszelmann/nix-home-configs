@@ -60,7 +60,6 @@ in
         nixGrammars = true;
         ensureInstalled = "all";
       };
-      treesitter-context.enable = true;
       surround.enable = true;
       cmp-nvim-lsp.enable = true;
       lsp-format.enable = true;
@@ -246,7 +245,6 @@ in
         servers = {
           astro.enable = true;
           cssls.enable = true;
-          rnix-lsp.enable = true;
           nil-ls = {
             enable = true;
             extraOptions = {
@@ -345,7 +343,6 @@ in
       cmp-vsnip
       cmp-path
       cmp-spell
-      cmp-tabnine
       nvim-web-devicons
       telescope-ui-select-nvim
       telescope-fzf-native-nvim

@@ -43,7 +43,6 @@ cmp.setup {
         ['<CR>'] = cmp.mapping.confirm({ select = true }),
     }),
     sources = cmp.config.sources({
-        { name = 'cmp_tabnine' },
         { name = 'nvim_lsp' },
         { name = "otter" },
         { name = 'path' },
