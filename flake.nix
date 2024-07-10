@@ -17,56 +17,52 @@
 
   outputs = { self, home-manager, nixpkgs, flake-utils, nixvim, t }:
     let
-      homeManagerModules = [
-        nixvim.homeManagerModules.nixvim
-      ];
+      homeManagerModules = [ nixvim.homeManagerModules.nixvim ];
 
       pkgsForSystem = system:
         import nixpkgs {
           inherit system;
           config.allowUnfree = true;
           overlays = [
-            (final: prev: {
-              custom = {
-                t = t.packages.${system}.default;
-              };
-            })
+            (final: prev: { custom = { t = t.packages.${system}.default; }; })
           ];
         };
       mkHomeConfiguration = root: args:
         home-manager.lib.homeManagerConfiguration ({
-          modules = [ root ] ++ homeManagerModules
-            ++ (args.modules or [ ]);
+          modules = [ root ] ++ homeManagerModules ++ (args.modules or [ ]);
           pkgs = pkgsForSystem (args.system or "x86_64-linux");
         } // {
           inherit (args) extraSpecialArgs;
         });
-    in
-    flake-utils.lib.eachDefaultSystem
-      (system: rec {
-        formatter = legacyPackages.nixfmt;
-        legacyPackages = pkgsForSystem system;
-        pkgs = legacyPackages;
-        devShells.default = pkgs.mkShell {
-          buildInputs = with pkgs; [
-            (pkgs.writeShellScriptBin "fast-repl" ''
-              source /etc/set-environment
-              nix repl --file "${./.}/repl.nix" $@
-            '')
+    in flake-utils.lib.eachDefaultSystem (system: rec {
+      formatter = legacyPackages.nixfmt;
+      legacyPackages = pkgsForSystem system;
+      pkgs = legacyPackages;
+      devShells.default = pkgs.mkShell {
+        buildInputs = with pkgs; [
+          (pkgs.writeShellScriptBin "fast-repl" ''
+            source /etc/set-environment
+            nix repl --file "${./.}/repl.nix" $@
+          '')
 
-            (pkgs.writeShellScriptBin "apply-home" ''
-              nix run .#home-manager -- switch --flake .#$@
-            '')
+          (pkgs.writeShellScriptBin "apply-home" ''
+            nix run .#home-manager -- switch --flake .#$@
+          '')
 
-            (pkgs.writeShellScriptBin "apply" ''
-              apply-home $(hostname -f)
-            '')
-          ];
-        };
-      }) // {
+          (pkgs.writeShellScriptBin "apply" ''
+            apply-home $(hostname -f)
+          '')
+        ];
+      };
+    }) // {
 
       homeConfigurations = {
-        kili = mkHomeConfiguration (import ./hosts/kili/home.nix) { extraSpecialArgs = { }; };
+        kili = mkHomeConfiguration (import ./hosts/kili/home.nix) {
+          extraSpecialArgs = { };
+        };
+        ori = mkHomeConfiguration (import ./hosts/ori/home.nix) {
+          extraSpecialArgs = { };
+        };
       };
 
       inherit home-manager;
