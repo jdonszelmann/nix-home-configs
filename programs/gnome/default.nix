@@ -14,12 +14,12 @@ let
     }
     {
       binding = "<Super>Return";
-      command = "gnome-terminal";
+      command = "${pkgs.kitty}/bin/kitty";
       name = "focus-terminal";
     }
     {
       binding = "F12";
-      command = "gnome-terminal -- ${((import ../zsh/scripts.nix) pkgs).calc}";
+      command = "${pkgs.kitty}/bin/kitty -- ${((import ../zsh/scripts.nix) pkgs).calc}";
       name = "calculator";
     }
   ];

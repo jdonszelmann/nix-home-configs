@@ -37,6 +37,8 @@ in
 
     package = pkgs.neovim-unwrapped;
 
+    clipboard.providers.wl-copy.enable = true;
+
     keymaps = [
       {
         key = "<f2>";
@@ -350,6 +352,7 @@ in
       render-markdown
       otter
       vim-astro
+      nvim-web-devicons 
     ];
 
     extraConfigLua = builtins.readFile ./config.lua;
