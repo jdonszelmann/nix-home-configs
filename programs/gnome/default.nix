@@ -84,7 +84,7 @@ in {
         edge-scrolling-enabled = false;
         natural-scroll = false;
         send-events = "enabled";
-        speed = 0.536764705882353;
+        speed = 0.5;
         tap-to-click = true;
         two-finger-scrolling-enabled = true;
       };

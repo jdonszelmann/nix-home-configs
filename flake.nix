@@ -35,7 +35,7 @@
           inherit (args) extraSpecialArgs;
         });
     in flake-utils.lib.eachDefaultSystem (system: rec {
-      formatter = legacyPackages.nixfmt;
+      formatter = legacyPackages.nixfmt-classic;
       legacyPackages = pkgsForSystem system;
       pkgs = legacyPackages;
       devShells.default = pkgs.mkShell {

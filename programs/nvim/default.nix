@@ -49,7 +49,7 @@ in
         action = "<cmd>Lspsaga outline<cr>";
       }
       {
-        key = "ga";
+        key = "<leader>.";
         action = "<cmd>Lspsaga code_action<cr>";
       }
     ];
@@ -355,7 +355,11 @@ in
       nvim-web-devicons 
     ];
 
-    extraConfigLua = builtins.readFile ./config.lua;
+    extraConfigLua = ''
+        require("render-markdown").setup {
+          latex_converter = '${pkgs.python312Packages.pylatexenc}/bin/latex2text',
+        }
+    '' + (builtins.readFile ./config.lua);
 
     opts = {
       lazyredraw = false;

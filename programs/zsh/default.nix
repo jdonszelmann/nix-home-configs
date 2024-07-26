@@ -20,6 +20,7 @@ let
     "add" = "${pkgs.git}/bin/git add";
     "patch" = "${pkgs.git}/bin/git add -p";
     "amend" = "${pkgs.git}/bin/git commit --amend";
+    "log" = "${pkgs.git}/bin/git log --graph --oneline --format=format:'%C(auto)%h %s%d %C(green)%cr %C(bold blue)<%an>%C(auto)'";
   };
   # extracting any compressed format
   extract = ''
@@ -52,19 +53,35 @@ in
     enable = true;
     enableCompletion = true;
     syntaxHighlighting.enable = true;
+    completionInit = ''
+        autoload -Uz compinit 
+        if [[ -n ''${ZDOTDIR}/.zcompdump(#qN.mh+24) ]]; then
+            compinit;
+        else
+            compinit -C;
+        fi;
+    '';
     initExtra = ''
-            source "${pkgs.grml-zsh-config}/etc/zsh/zshrc"
-            export FZF_DEFAULT_COMMAND="${pkgs.ripgrep}/bin/rg --files --follow"
-            source "${pkgs.fzf}/share/fzf/key-bindings.zsh"
-            source "${pkgs.fzf}/share/fzf/completion.zsh"
-            eval "$(${pkgs.zoxide}/bin/zoxide init zsh)"
-            eval "$(${pkgs.atuin}/bin/atuin init zsh)"
-            eval "$(${pkgs.direnv}/bin/direnv hook zsh)"
+      source "${pkgs.grml-zsh-config}/etc/zsh/zshrc"
+      export FZF_DEFAULT_COMMAND="${pkgs.ripgrep}/bin/rg --files --follow"
+      source "${pkgs.fzf}/share/fzf/key-bindings.zsh"
+      source "${pkgs.fzf}/share/fzf/completion.zsh"
+      eval "$(${pkgs.zoxide}/bin/zoxide init zsh)"
+      eval "$(${pkgs.atuin}/bin/atuin init zsh)"
+      eval "$(${pkgs.direnv}/bin/direnv hook zsh)"
+      function zvm_config() {
+        ZVM_READKEY_ENGINE=$ZVM_READKEY_ENGINE_NEX
+        ZVM_LINE_INIT_MODE=$ZVM_MODE_INSERT
+        ZVM_ESCAPE_KEYTIMEOUT=0.03
+      }
 
-            ${extract}
+      source ${pkgs.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
 
-            ${foldl' (a: b: a + "\n" + b) ""
-            (mapAttrsToList (name: value: ''alias ${name}="${value}"'') aliases)}
+
+      ${extract}
+
+      ${foldl' (a: b: a + "\n" + b) ""
+        (mapAttrsToList (name: value: ''alias ${name}="${value}"'') aliases)}
 
       function t() {
           cd "$(${pkgs.custom.t}/bin/t-rs $@ | tail -n 1)"
@@ -89,6 +106,12 @@ in
       path "$HOME/.local/bin"
       path "$HOME/Documents/scripts"
       path "$HOME/.local/share/JetBrains/Toolbox/scripts"
+
+      # http://bewatermyfriend.org/p/2013/001/
+      # export NEWLINE=$'\n'
+      # zstyle ':prompt:grml:*:items:percent' pre "''${NEWLINE}"
+
+
     '';
   };
 }

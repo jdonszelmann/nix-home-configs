@@ -16,6 +16,7 @@
     (python3.withPackages (pip: with pip; [ numpy matplotlib ]))
     spotify
     firefox
+    chromium
     syncthing
     nixfmt
     xdg-utils
@@ -24,9 +25,17 @@
     prismlauncher
     graphviz-nox
 
+    inkscape
+    gimp
+    xournalpp
+    libreoffice
+
+    dogdns
+
     jetbrains.rust-rover
 
-    libreoffice
+    vlc
+    audacity
   ];
 
   programs.firefox = { enable = true; };

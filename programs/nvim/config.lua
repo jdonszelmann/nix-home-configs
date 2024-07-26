@@ -85,7 +85,7 @@ vim.keymap.set('n', 'gt', builtin.lsp_type_definitions, {})
 
 -- format on wq and x and replace X, W and Q with x, w and q
 vim.cmd [[cabbrev wq execute "Format sync" <bar> wq]]
-vim.cmd [[cabbrev x execute "Format sync" <bar> x]]
+vim.cmd [[cabbrev x execute "Format sync" <bar> x]# ]]
 vim.cmd [[cnoreabbrev W w]]
 vim.cmd [[cnoreabbrev X execute "Format sync" <bar> x]]
 vim.cmd [[cnoreabbrev Q q]]
@@ -93,9 +93,10 @@ vim.cmd [[nnoremap ; :]]
 
 local builtin = require('telescope.builtin')
 
-vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
+vim.keymap.set('n', '<leader>s', "<cmd>vertical sb<cr>", {})
+vim.keymap.set('n', '<leader>f', builtin.find_files, {})
 vim.keymap.set('n', '<leader><leader>', builtin.live_grep, {})
-vim.keymap.set('n', '<leader>fh', builtin.search_history, {})
+vim.keymap.set('n', '<leader>h', builtin.search_history, {})
 vim.keymap.set('n', '<leader>d', "<cmd>Telescope diagnostics bufnr=0<cr>", {})
 vim.keymap.set('n', '<leader>ad', builtin.diagnostics, {})
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
@@ -106,7 +107,7 @@ vim.keymap.set('n', '<leader>gr', gitsigns.reset_hunk)
 vim.keymap.set('n', '<leader>gd', gitsigns.diffthis)
 
 vim.keymap.set({'o', 'x'}, 'ig', ':<C-U>Gitsigns select_hunk<CR>')
-vim.keymap.set('n', '<leader>t', ':Neotree toggle<CR>')
+vim.keymap.set('n', 't', ':Neotree toggle<CR>')
 
 -- ============ files and directories ==============
 
@@ -209,8 +210,11 @@ vim.cmd([[
   cnoremap %s/ %sm/
 ]])
 
-keymap('n', "t", ":FloatermToggle myfloat<CR>", opts)
-keymap('t', "<Esc>", "<C-\\><C-n>:q<CR>", opts)
+vim.cmd([[
+  inoremap <silent> <F1> <CMD>FloatermToggle<CR>
+  nnoremap <silent> <F1> <CMD>FloatermToggle<CR>
+  tnoremap <silent> <F1> <C-\><C-n><CMD>FloatermToggle<CR>
+]])
 
 vim.cmd([[
     let g:suda_smart_edit = 1
