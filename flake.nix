@@ -13,9 +13,14 @@
     };
 
     t.url = "github:jdonszelmann/t-rs";
+
+    kitty-search = {
+        url = "github:trygveaa/kitty-kitten-search";
+        flake = false;
+    };
   };
 
-  outputs = { self, home-manager, nixpkgs, flake-utils, nixvim, t }:
+  outputs = { self, home-manager, nixpkgs, flake-utils, nixvim, t, ... }@inputs:
     let
       homeManagerModules = [ nixvim.homeManagerModules.nixvim ];
 
@@ -58,10 +63,10 @@
 
       homeConfigurations = {
         kili = mkHomeConfiguration (import ./hosts/kili/home.nix) {
-          extraSpecialArgs = { };
+          extraSpecialArgs = { inherit inputs; };
         };
         ori = mkHomeConfiguration (import ./hosts/ori/home.nix) {
-          extraSpecialArgs = { };
+          extraSpecialArgs = { inherit inputs; };
         };
       };
 

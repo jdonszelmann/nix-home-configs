@@ -217,6 +217,22 @@
         "type": "github"
       }
     },
+    "kitty-search": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1675366825,
+        "narHash": "sha256-egisza7V5dWplRYHIYt4bEQdqXa4E7UhibyWJAup8as=",
+        "owner": "trygveaa",
+        "repo": "kitty-kitten-search",
+        "rev": "0760138fad617c5e4159403cbfce8421ccdfe571",
+        "type": "github"
+      },
+      "original": {
+        "owner": "trygveaa",
+        "repo": "kitty-kitten-search",
+        "type": "github"
+      }
+    },
     "nix-darwin": {
       "inputs": {
         "nixpkgs": [
@@ -299,6 +315,7 @@
       "inputs": {
         "flake-utils": "flake-utils",
         "home-manager": "home-manager",
+        "kitty-search": "kitty-search",
         "nixpkgs": "nixpkgs",
         "nixvim": "nixvim",
         "t": "t"
