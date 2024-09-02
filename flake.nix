@@ -15,8 +15,8 @@
     t.url = "github:jdonszelmann/t-rs";
 
     kitty-search = {
-        url = "github:trygveaa/kitty-kitten-search";
-        flake = false;
+      url = "github:trygveaa/kitty-kitten-search";
+      flake = false;
     };
   };
 
@@ -39,27 +39,29 @@
         } // {
           inherit (args) extraSpecialArgs;
         });
-    in flake-utils.lib.eachDefaultSystem (system: rec {
-      formatter = legacyPackages.nixfmt-classic;
-      legacyPackages = pkgsForSystem system;
-      pkgs = legacyPackages;
-      devShells.default = pkgs.mkShell {
-        buildInputs = with pkgs; [
-          (pkgs.writeShellScriptBin "fast-repl" ''
-            source /etc/set-environment
-            nix repl --file "${./.}/repl.nix" $@
-          '')
+    in
+    flake-utils.lib.eachDefaultSystem
+      (system: rec {
+        formatter = legacyPackages.nixfmt-classic;
+        legacyPackages = pkgsForSystem system;
+        pkgs = legacyPackages;
+        devShells.default = pkgs.mkShell {
+          buildInputs = with pkgs; [
+            (pkgs.writeShellScriptBin "fast-repl" ''
+              source /etc/set-environment
+              nix repl --file "${./.}/repl.nix" $@
+            '')
 
-          (pkgs.writeShellScriptBin "apply-home" ''
-            nix run .#home-manager -- switch --flake .#$@
-          '')
+            (pkgs.writeShellScriptBin "apply-home" ''
+              nix run .#home-manager -- switch --flake .#$@
+            '')
 
-          (pkgs.writeShellScriptBin "apply" ''
-            apply-home $(hostname -f)
-          '')
-        ];
-      };
-    }) // {
+            (pkgs.writeShellScriptBin "apply" ''
+              apply-home $(hostname -f)
+            '')
+          ];
+        };
+      }) // {
 
       homeConfigurations = {
         kili = mkHomeConfiguration (import ./hosts/kili/home.nix) {

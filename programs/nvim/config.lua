@@ -19,7 +19,10 @@ vim.filetype.add({
 require("onedark").setup {
     style = "deep",
     highlights = {
-        ["@comment"] = {fg = '#77B767'}
+        ["@lsp.type.comment"] = {fg = '#77B767'},
+        ["@comment.documentation.rust"] = {fg = '#77B767'},
+        ["@comment.documentation"] = {fg = '#77B767'},
+        ["@comment"] = {fg = '#426639'}
     }
 }
 require("onedark").load()
@@ -68,10 +71,14 @@ local opts = { noremap = true, silent = true }
 local builtin = require('telescope.builtin')
   
 -- comment
-vim.keymap.set("n", "<C-/>", ":lua require('Comment.api').toggle.linewise.current()<CR> j", opts)
-vim.keymap.set("v", "<C-/>", ":lua require('Comment.api').toggle.linewise.current()<CR> j", opts)
+vim.keymap.set("n", "<leader>c", ":lua require('Comment.api').toggle.linewise.current()<CR> j", { remap = true })
+vim.keymap.set("v", "<leader>c", ":lua require('Comment.api').toggle.linewise.current()<CR> j", { remap = true })
 
--- indent and dedent using tab/shift-tab
+
+vim.keymap.set("n", "<C-/>", ":lua require('Comment.api').toggle.linewise.current()<CR> j", { remap = true })
+vim.keymap.set("v", "<C-/>", ":lua require('Comment.api').toggle.linewise.current()<CR> j", { remap = true })
+
+-- indent and dedent using tab/shift-ta
 vim.keymap.set("n", "<tab>", ">>_")
 vim.keymap.set("n", "<s-tab>", "<<_")
 vim.keymap.set("i", "<s-tab>", "<c-d>")
@@ -85,7 +92,7 @@ vim.keymap.set('n', 'gt', builtin.lsp_type_definitions, {})
 
 -- format on wq and x and replace X, W and Q with x, w and q
 vim.cmd [[cabbrev wq execute "Format sync" <bar> wq]]
-vim.cmd [[cabbrev x execute "Format sync" <bar> x]# ]]
+vim.cmd [[cabbrev x execute "Format sync" <bar> x]]
 vim.cmd [[cnoreabbrev W w]]
 vim.cmd [[cnoreabbrev X execute "Format sync" <bar> x]]
 vim.cmd [[cnoreabbrev Q q]]
@@ -94,13 +101,20 @@ vim.cmd [[nnoremap ; :]]
 local builtin = require('telescope.builtin')
 
 vim.keymap.set('n', '<leader>s', "<cmd>vertical sb<cr>", {})
-vim.keymap.set('n', '<leader>f', builtin.find_files, {})
-vim.keymap.set('n', '<leader><leader>', builtin.live_grep, {})
+vim.keymap.set('n', '<leader><leader>', builtin.find_files, {})
+vim.keymap.set('n', '<leader>f', builtin.live_grep, {})
 vim.keymap.set('n', '<leader>h', builtin.search_history, {})
 vim.keymap.set('n', '<leader>d', "<cmd>Telescope diagnostics bufnr=0<cr>", {})
 vim.keymap.set('n', '<leader>ad', builtin.diagnostics, {})
+vim.keymap.set('n', '<leader>em', "<cmd>RustLsp expandMacro<cr>")
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
+
+vim.keymap.set("n", "<leader>x", require("telescope.builtin").resume, {
+  noremap = true,
+  silent = true,
+  desc = "Resume",
+})
 
 local gitsigns = require('gitsigns')
 vim.keymap.set('n', '<leader>gr', gitsigns.reset_hunk)
@@ -220,4 +234,11 @@ vim.cmd([[
     let g:suda_smart_edit = 1
     filetype plugin indent on
 ]])
+
+
+-- multicursor
+vim.g.VM_default_mappings = 1
+vim.g.VM_reselect_first = 1
+vim.g.VM_notify_previously_selected = 1
+vim.g.VM_theme = "iceblue"
 

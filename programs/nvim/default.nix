@@ -62,6 +62,7 @@ in
         nixGrammars = true;
         ensureInstalled = "all";
       };
+      rainbow-delimiters.enable = true;
       surround.enable = true;
       cmp-nvim-lsp.enable = true;
       lsp-format.enable = true;
@@ -240,7 +241,6 @@ in
         };
       };
 
-
       lsp = {
         enable = true;
 
@@ -260,6 +260,7 @@ in
               };
             };
           };
+
           clangd = {
             enable = true;
             filetypes = [ "c" "cpp" "objc" "objcpp" ];
@@ -281,10 +282,10 @@ in
             enable = true;
             filetypes = [ "python" ];
           };
-          taplo = {
-            enable = true;
-            filetypes = [ "toml" ];
-          };
+          # taplo = {
+          #   enable = true;
+          #   filetypes = [ "toml" ];
+          # };
           bashls = {
             enable = true;
 
@@ -306,8 +307,8 @@ in
 
         keymaps = {
           lspBuf = {
-            "<leader>fmt" = "format";
-            "<leader>h" = "hover";
+            "<leader>;" = "format";
+            "gh" = "hover";
           };
         };
       };
@@ -338,6 +339,20 @@ in
         enable = true;
         diagnostics = "nvim_lsp";
       };
+
+
+      none-ls = {
+        enable = true;
+        sources = {
+          formatting.nixpkgs_fmt.enable = true;
+          code_actions.statix.enable = true;
+          diagnostics = {
+            statix.enable = true;
+            deadnix.enable = true;
+          };
+        };
+      };
+      nix.enable = true;
     };
     extraPlugins = with pkgs.vimPlugins; [
       onedark-nvim
@@ -352,13 +367,14 @@ in
       render-markdown
       otter
       vim-astro
-      nvim-web-devicons 
+      nvim-web-devicons
+      vim-visual-multi
     ];
 
     extraConfigLua = ''
-        require("render-markdown").setup {
-          latex_converter = '${pkgs.python312Packages.pylatexenc}/bin/latex2text',
-        }
+      require("render-markdown").setup {
+        latex_converter = '${pkgs.python312Packages.pylatexenc}/bin/latex2text',
+      }
     '' + (builtins.readFile ./config.lua);
 
     opts = {

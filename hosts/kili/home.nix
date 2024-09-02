@@ -8,6 +8,7 @@
     ../../programs/zsh
     ../../programs/kanata
     ../../programs/kitty
+    ../../programs/tmux
   ];
 
   # use the system-installed version of kitty on arch

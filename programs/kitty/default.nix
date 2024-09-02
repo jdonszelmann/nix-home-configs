@@ -31,10 +31,12 @@
 
         keybindings = {
             "ctrl+f" = "launch --location=hsplit --allow-remote-control kitty +kitten ${inputs.kitty-search}/search.py @active-kitty-window-id";
-            "ctrl+r" = "load_config_file";
+            "ctrl+alt+r" = "load_config_file";
+            "ctrl+shift+r" = "no_op";
             "ctrl+EQUAL" = "change_font_size all +2.0";
             "ctrl+minus" = "change_font_size all -2.0";
             "ctrl+0" = "change_font_size all 0";
+            "ctrl+/" = "send_text all \x1b[47;5u";
         };
     };
 }
