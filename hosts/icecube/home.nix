@@ -9,4 +9,10 @@
     ../../programs/tmux
     ../../programs/git
   ];
+
+  home.sessionVariables.PATH = "$HOME/.nix-profile/bin:$PATH";
+
+  home.packages = with pkgs; [
+    atuin
+  ];
 }
