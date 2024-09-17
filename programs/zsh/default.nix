@@ -20,7 +20,7 @@ let
     "add" = "${pkgs.git}/bin/git add";
     "patch" = "${pkgs.git}/bin/git add -p";
     "amend" = "${pkgs.git}/bin/git commit --amend";
-    "log" = "${pkgs.git}/bin/git log --graph --oneline --format=format:'%C(auto)%h %s%d %C(green)%cr %C(bold blue)<%an>%C(auto)'";
+    "log" = "${pkgs.git}/bin/git log --all --graph --decorate";
   };
   # extracting any compressed format
   extract = ''
@@ -54,12 +54,12 @@ in
     enableCompletion = true;
     syntaxHighlighting.enable = true;
     completionInit = ''
-        autoload -Uz compinit 
-        if [[ -n ''${ZDOTDIR}/.zcompdump(#qN.mh+24) ]]; then
-            compinit;
-        else
-            compinit -C;
-        fi;
+      autoload -Uz compinit 
+      if [[ -n ''${ZDOTDIR}/.zcompdump(#qN.mh+24) ]]; then
+          compinit;
+      else
+          compinit -C;
+      fi;
     '';
     initExtra = ''
       source "${pkgs.grml-zsh-config}/etc/zsh/zshrc"

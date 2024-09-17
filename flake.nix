@@ -70,6 +70,9 @@
         ori = mkHomeConfiguration (import ./hosts/ori/home.nix) {
           extraSpecialArgs = { inherit inputs; };
         };
+        icecube = mkHomeConfiguration (import ./hosts/icecube/home.nix) {
+          extraSpecialArgs = { inherit inputs; };
+        };
       };
 
       inherit home-manager;

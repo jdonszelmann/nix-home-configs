@@ -2,10 +2,11 @@
   home.stateVersion = "24.05";
   home.username = "jonathan";
   home.homeDirectory = "/home/jonathan";
-  imports = [ 
+  imports = [
     ../../programs/gnome
     ../../programs/nvim
     ../../programs/zsh
+    ../../programs/git
   ];
 
   home.packages = with pkgs; [
@@ -41,20 +42,4 @@
   programs.firefox = { enable = true; };
 
   services.syncthing = { enable = true; };
-
-  programs.git = {
-    enable = true;
-    extraConfig = {
-      init.defaultBranch = "main";
-      pull.rebase = false;
-      # merge.tool = "meld";
-      # mergetool.meld.cmd = ''
-      # ${pkgs.meld}/bin/meld "$LOCAL" "$BASE" "$REMOTE" --output "$MERGED"
-      # '';
-      push = { autoSetupRemote = true; };
-    };
-    aliases = { amend = "commit --amend"; };
-    userName = "Jonathan Dönszelmann";
-    userEmail = "jonathan@donsz.nl";
-  };
 }

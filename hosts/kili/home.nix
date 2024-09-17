@@ -9,16 +9,17 @@
     ../../programs/kanata
     ../../programs/kitty
     ../../programs/tmux
+    ../../programs/git
   ];
 
   # use the system-installed version of kitty on arch
   # something graphics related crashes otherwise
   programs.kitty.package = pkgs.stdenv.mkDerivation {
-      name = "kitty";
-      src = ./.;
-      installPhase = ''
-        mkdir -p $out/bin
-        echo "#!/usr/bin/env bash\nexec /usr/bin/kitty" > $out/bin/kitty;
-      '';
+    name = "kitty";
+    src = ./.;
+    installPhase = ''
+      mkdir -p $out/bin
+      echo "#!/usr/bin/env bash\nexec /usr/bin/kitty" > $out/bin/kitty;
+    '';
   };
 }

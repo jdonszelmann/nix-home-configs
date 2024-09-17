@@ -38,6 +38,11 @@ cmp.setup {
         completion = cmp.config.window.bordered(),
         documentation = cmp.config.window.bordered(),
     },
+    view = {
+      docs = {
+        auto_open = false
+      }
+    },
     mapping = cmp.mapping.preset.insert({
         ['<C-b>'] = cmp.mapping.scroll_docs(-4),
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
@@ -45,6 +50,14 @@ cmp.setup {
         ['<C-e>'] = cmp.mapping.abort(),
         -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
         ['<CR>'] = cmp.mapping.confirm({ select = true }),
+
+        ['<C-g>'] = function()
+          if cmp.visible_docs() then
+            cmp.close_docs()
+          else
+            cmp.open_docs()
+          end
+        end
     }),
     sources = cmp.config.sources({
         { name = 'nvim_lsp' },
