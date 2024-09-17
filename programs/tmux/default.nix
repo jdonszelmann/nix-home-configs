@@ -13,6 +13,8 @@
       set -g set-titles on
       set -s escape-time 0
 
+      set-option -g default-shell /bin/zsh
+
       set-window-option -g mode-keys vi
 
       # clipboard stuff
