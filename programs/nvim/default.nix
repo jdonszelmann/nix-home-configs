@@ -52,18 +52,21 @@ in
         key = "<leader>.";
         action = "<cmd>Lspsaga code_action<cr>";
       }
+
     ];
 
     plugins = {
       treesitter = {
         enable = true;
-        indent = true;
 
         nixGrammars = true;
-        ensureInstalled = "all";
+        settings = {
+          indent.enable = true;
+          ensure_installed = "all";
+        };
       };
       rainbow-delimiters.enable = true;
-      surround.enable = true;
+      vim-surround.enable = true;
       cmp-nvim-lsp.enable = true;
       lsp-format.enable = true;
       fugitive.enable = true;
@@ -88,10 +91,6 @@ in
 
         settings = {
           sticky = true;
-          opleader = {
-            line = "gc";
-            block = "gb";
-          };
         };
       };
 
@@ -104,8 +103,8 @@ in
           mappings = {
             "<bs>" = "navigate_up";
             "." = "set_root";
-            "f" = "fuzzy_finder";
-            "/" = "filter_on_submit";
+            "/" = "fuzzy_finder";
+            "f" = "filter_on_submit";
             "h" = "show_help";
           };
         };
@@ -144,7 +143,7 @@ in
             text = "💡";
           };
           status_text = {
-            enabled = true;
+            enabled = false;
             text = "💡";
           };
         };
@@ -174,14 +173,14 @@ in
         enable = true;
         settings = {
           cmd = "${pkgs.typst}/bin/typst";
-          conceal_math = true;
-          auto_close_toc = true;
+          conceal_math = 1;
+          auto_close_toc = 1;
         };
       };
 
       lualine = {
         enable = true;
-        theme = "onedark";
+        settings.options.theme = "onedark";
       };
 
       rustaceanvim = {
@@ -193,7 +192,7 @@ in
           server = {
             standalone = false;
             cmd = [ "rustup" "run" "nightly" "rust-analyzer" ];
-            settings = {
+            default_settings = {
               rust-analyzer = {
                 inlayHints = { lifetimeElisionHints = { enable = "always"; }; };
                 check = { command = "clippy"; };
@@ -232,10 +231,11 @@ in
               };
 
               rustc.source = "discover";
-            };
-            diagnostics = {
-              enable = true;
-              styleLints.enable = true;
+
+              options.diagnostics = {
+                enable = true;
+                styleLints.enable = true;
+              };
             };
           };
         };
@@ -291,7 +291,7 @@ in
 
             filetypes = [ "sh" "bash" ];
           };
-          tsserver = {
+          ts-ls = {
             enable = true;
             filetypes =
               [ "javascript" "javascriptreact" "typescript" "typescriptreact" ];
@@ -337,7 +337,7 @@ in
       };
       bufferline = {
         enable = true;
-        diagnostics = "nvim_lsp";
+        settings.options.diagnostics = "nvim_lsp";
       };
 
 
@@ -353,6 +353,8 @@ in
         };
       };
       nix.enable = true;
+
+      web-devicons.enable = true;
     };
     extraPlugins = with pkgs.vimPlugins; [
       onedark-nvim
@@ -369,6 +371,7 @@ in
       vim-astro
       nvim-web-devicons
       vim-visual-multi
+      vim-gh-line
     ];
 
     extraConfigLua = ''

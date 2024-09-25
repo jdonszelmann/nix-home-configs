@@ -85,11 +85,7 @@ local builtin = require('telescope.builtin')
   
 -- comment
 vim.keymap.set("n", "<leader>c", ":lua require('Comment.api').toggle.linewise.current()<CR> j", { remap = true })
-vim.keymap.set("v", "<leader>c", ":lua require('Comment.api').toggle.linewise.current()<CR> j", { remap = true })
-
-
-vim.keymap.set("n", "<C-/>", ":lua require('Comment.api').toggle.linewise.current()<CR> j", { remap = true })
-vim.keymap.set("v", "<C-/>", ":lua require('Comment.api').toggle.linewise.current()<CR> j", { remap = true })
+vim.keymap.set("v", "<leader>c", ":lua require('Comment.api').toggle.blockwise.current()<CR> j", { remap = true })
 
 -- indent and dedent using tab/shift-ta
 vim.keymap.set("n", "<tab>", ">>_")

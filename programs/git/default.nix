@@ -3,7 +3,7 @@ _: {
     enable = true;
     userEmail = "jonathan@donsz.nl";
     userName = "Jonathan Dönszelmann";
-    signing.key = "~/.ssh/id_ed25519.pub";
+    signing.key = "/home/jonathan/.ssh/id_ed25519.pub";
     signing.signByDefault = true;
 
     delta.enable = true;
